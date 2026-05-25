@@ -5,7 +5,11 @@
 
 ### AI-First Voice Interview Prep Platform
 
-[Features](#features) • [Getting Started](#getting-started) • [Tech Stack](#tech-stack) • [Roadmap](#roadmap) • [Support](#support)
+[Features](#features) • 
+[Getting Started](#getting-started) • 
+[Tech Stack](#tech-stack) • 
+[Roadmap](#roadmap) • 
+[Support](#support)
 
 </div>
 
