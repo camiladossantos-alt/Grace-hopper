@@ -205,23 +205,15 @@ Suggested Answer:
 Complete documentation available in the [Grace Hopper Docs Portal](https://your-username.github.io/grace-hopper-docs/grace_hopper_prd_portal.html):
 
 - **[Product Overview](grace_hopper_prd_portal.html)** - Complete product documentation
-- **[Implementation Guide](GRACE_HOPPER_IMPLEMENTATION_GUIDE.md)** - Technical specifications
-- **[UI/UX Specification](GRACE_HOPPER_UI_UX_SPECIFICATION.md)** - Design system & components
 - **[Architecture Decisions](GRACE_HOPPER_ADR.md)** - Technical decisions & trade-offs
-- **[Executive Summary](EXECUTIVE_SUMMARY.md)** - Business overview & vision
 
 ---
 
 ## 🤝 How to Get Help
 
-### For Users
-- **Questions?** Open a [GitHub Issue](https://github.com/your-org/grace-hopper/issues)
-- **Found a bug?** [Report it here](https://github.com/your-org/grace-hopper/issues/new)
-- **Feature request?** [Suggest it](https://github.com/your-org/grace-hopper/issues/new)
 
 ### For Developers
 - **Documentation:** See [CONTRIBUTING.md](CONTRIBUTING.md)
-- **Setup Guide:** Check [GRACE_HOPPER_IMPLEMENTATION_GUIDE.md](GRACE_HOPPER_IMPLEMENTATION_GUIDE.md)
 - **Issues:** Help with [good first issues](https://github.com/your-org/grace-hopper/issues?q=label:"good+first+issue")
 
 ### For Businesses
@@ -263,13 +255,7 @@ With the condition that you include the license and copyright notice.
 
 ---
 
-## 🎓 Learning Resources
 
-### Interview Preparation
-- [System Design](https://gracehopper.dev/guides/system-design)
-- [Behavioral Interview Tips](https://gracehopper.dev/guides/behavioral)
-- [Technical Questions](https://gracehopper.dev/guides/technical)
-- [Communication Skills](https://gracehopper.dev/guides/communication)
 
 ### Technology Stack
 - [Next.js Documentation](https://nextjs.org/docs)
@@ -277,14 +263,6 @@ With the condition that you include the license and copyright notice.
 - [Supabase Docs](https://supabase.com/docs)
 - [Google Gemini API](https://ai.google.dev/)
 
----
-
-## 🔐 Privacy & Security
-
-- **LGPD Compliant** - Your data is private
-- **No Third-party Tracking** - Your privacy matters
-
-See [PRIVACY.md](PRIVACY.md) and [SECURITY.md](SECURITY.md) for details.
 
 ---
 
