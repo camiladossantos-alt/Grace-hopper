@@ -20,7 +20,56 @@ export default function Home() {
     };
     checkUser();
   }, []);
- 
+
+  useEffect(() => {
+    const animateWords = () => {
+      const wordElements = document.querySelectorAll('.word-animate');
+      wordElements.forEach(word => {
+        const htmlWord = word as HTMLElement;
+        const delay = parseInt(htmlWord.getAttribute('data-delay') || '0');
+        setTimeout(() => {
+          if (htmlWord) {
+            htmlWord.style.animation = 'word-appear-phrase 0.8s ease-out forwards';
+          }
+        }, delay);
+      });
+    };
+    const timeoutId = setTimeout(animateWords, 300);
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
+    const wordElements = document.querySelectorAll('.word-animate');
+    const handleMouseEnter = (e: Event) => {
+      if (e.target) {
+        const target = e.target as HTMLElement;
+        target.style.textShadow = '0 0 15px rgba(255, 255, 255, 0.7)';
+        target.style.color = '#ffffff';
+        target.style.transform = 'translateY(-2px) scale(1.03)';
+      }
+    };
+    const handleMouseLeave = (e: Event) => {
+      if (e.target) {
+        const target = e.target as HTMLElement;
+        target.style.textShadow = 'none';
+        target.style.color = '';
+        target.style.transform = '';
+      }
+    };
+    wordElements.forEach(word => {
+      word.addEventListener('mouseenter', handleMouseEnter);
+      word.addEventListener('mouseleave', handleMouseLeave);
+    });
+    return () => {
+      wordElements.forEach(word => {
+        if (word) {
+          word.removeEventListener('mouseenter', handleMouseEnter);
+          word.removeEventListener('mouseleave', handleMouseLeave);
+        }
+      });
+    };
+  }, [loading]);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -37,7 +86,43 @@ export default function Home() {
   };
  
   return (
-    <div className="min-h-screen bg-white text-black flex flex-col font-sans">
+    <div className="min-h-screen bg-white text-black flex flex-col font-sans animate-page-fade">
+      <style>{`
+        @keyframes page-fade-in {
+          0% {
+            opacity: 0;
+            filter: blur(4px);
+            transform: scale(0.995);
+          }
+          100% {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
+          }
+        }
+        .animate-page-fade {
+          opacity: 0;
+          animation: page-fade-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes word-appear-phrase {
+          0% {
+            opacity: 0;
+            transform: translateY(20px) scale(0.85);
+            filter: blur(8px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+          }
+        }
+        .word-animate {
+          display: inline-block;
+          opacity: 0;
+          transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
+          cursor: default;
+        }
+      `}</style>
       {/* Main Container */}
       <main className="flex-1 flex flex-col">
         {/* Photo Hero Section (Full Viewport, including transparent Header) */}
@@ -118,13 +203,32 @@ export default function Home() {
             </div>
           </header>
           
-          {/* Content Overlay Container (buttons positioned lower near bottom-right) */}
-          <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 w-full max-w-7xl px-6 md:px-12 z-10 flex justify-end items-end animate-slide-up-fade">
-            {/* Buttons Side */}
-            <div className="flex flex-row items-center justify-end gap-4 w-full md:w-auto">
+          {/* Content Overlay Container (phrase and buttons stacked on the bottom-left) */}
+          <div className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 w-full max-w-7xl px-6 md:px-12 z-10 flex flex-col justify-end items-start gap-5 sm:gap-6 animate-slide-up-fade">
+            
+            {/* Small uppercase label above the title */}
+            <span className="text-[10px] md:text-xs tracking-[0.2em] text-white/60 uppercase font-semibold">
+              Plataforma de Simulação
+            </span>
+
+            {/* Phrase Side */}
+            <div className="max-w-2xl lg:max-w-3xl">
+              <p className="text-white/95 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-tight lg:leading-[1.12] drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+                <span className="word-animate" data-delay="0">Fale</span>{" "}
+                <span className="word-animate" data-delay="150">com</span>{" "}
+                <span className="word-animate" data-delay="300">convicção,</span>
+                <br className="hidden sm:inline" />{" "}
+                <span className="word-animate" data-delay="500">domine</span>{" "}
+                <span className="word-animate" data-delay="650">a</span>{" "}
+                <span className="word-animate" data-delay="800">entrevista.</span>
+              </p>
+            </div>
+
+            {/* Buttons Side - Positioned below the phrase */}
+            <div className="flex flex-row items-center gap-4 mt-2">
               <button 
                 onClick={(e) => handleNavClick(e, "/interview")}
-                className="group text-center text-xs sm:text-sm font-semibold text-white bg-[#0A0A41] border border-[#0A0A41] rounded-[6px] px-8 py-3.5 shadow-lg cursor-pointer transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 whitespace-nowrap min-w-[188px] h-[54px] flex items-center justify-center"
+                className="group text-center text-xs sm:text-sm font-semibold text-white bg-[#0A0A41] hover:bg-[#06062d] border border-[#0A0A41] rounded-[6px] px-8 py-3.5 shadow-lg cursor-pointer transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 whitespace-nowrap min-w-[188px] h-[54px] flex items-center justify-center"
               >
                 <span className="inline-block transition-transform duration-300 group-hover:-translate-x-1.5">
                   Comece sua entrevista
