@@ -74,12 +74,15 @@ export default function InterviewSelectPage() {
       });
       const data = await response.json();
       if (!response.ok) {
+        if (response.status === 429 || response.status === 503 || (data.error && (data.error.toLowerCase().includes("limit") || data.error.toLowerCase().includes("quota")))) {
+          throw new Error("Ihhh, tem muita gente querendo fazer entrevista agora! Espere um minutinho e tente novamente. ⏳");
+        }
         throw new Error(data.error || "Erro desconhecido.");
       }
       window.location.href = `/interview/${data.id}`;
     } catch (e: any) {
       console.error(e);
-      alert("Erro ao iniciar a entrevista: " + e.message);
+      alert(e.message.startsWith("Ihhh") ? e.message : "Erro ao iniciar a entrevista: " + e.message);
     } finally {
       setLoadingId(null);
     }

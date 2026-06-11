@@ -10,8 +10,8 @@ function translateApiError(message: string): string {
   if (msg.includes("não autorizado") || msg.includes("unauthorized") || msg.includes("não autenticado")) {
     return "Sua sessão expirou por segurança. Por favor, faça login novamente para salvar e analisar sua resposta! 🔒";
   }
-  if (msg.includes("limite") || msg.includes("quota") || msg.includes("rate limit") || msg.includes("excede")) {
-    return "Atingimos o limite temporário de análise de inteligência artificial. Por favor, aguarde um minutinho e tente enviar novamente! ⏳";
+  if (msg.includes("rate_limit_exceeded") || msg.includes("limite") || msg.includes("quota") || msg.includes("rate limit") || msg.includes("excede")) {
+    return "Ihhh, tem muita gente querendo fazer entrevista agora! Espere um minutinho e tente novamente. ⏳";
   }
   if (msg.includes("csrf")) {
     return "Ops! A requisição foi recusada por segurança (CSRF). Por favor, recarregue a página e tente enviar de novo. 🛡️";
@@ -211,6 +211,9 @@ export default function InterviewSessionPage({ params }: { params: any }) {
 
       const data = await response.json();
       if (!response.ok) {
+        if (response.status === 429 || response.status === 503) {
+          throw new Error("rate_limit_exceeded");
+        }
         throw new Error(data.error || "Erro ao analisar.");
       }
 
