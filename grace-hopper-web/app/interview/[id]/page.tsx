@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/utils/supabase";
@@ -29,6 +29,7 @@ export default function InterviewSessionPage({ params }: { params: any }) {
   const [recognition, setRecognition] = useState<any>(null);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const isExplicitlyStopped = useRef(true);
 
   // 0. Unwrap params safely (handles both Promise and plain object)
   useEffect(() => {
@@ -109,7 +110,18 @@ export default function InterviewSessionPage({ params }: { params: any }) {
         };
 
         rec.onend = () => {
-          setIsRecording(false);
+          if (!isExplicitlyStopped.current) {
+            // O navegador parou a gravação sozinho (ex: silêncio ou limite no mobile).
+            // Tentamos reiniciar a gravação automaticamente para continuar ouvindo!
+            try {
+              rec.start();
+            } catch (e) {
+              console.error("Erro ao reiniciar reconhecimento de fala:", e);
+              setIsRecording(false);
+            }
+          } else {
+            setIsRecording(false);
+          }
         };
 
         setRecognition(rec);
@@ -132,6 +144,7 @@ export default function InterviewSessionPage({ params }: { params: any }) {
 
   const handleStartRecording = () => {
     setErrorMsg("");
+    isExplicitlyStopped.current = false;
     if (recognition) {
       try {
         setTranscript("Ouvindo... Fale agora.");
@@ -146,6 +159,7 @@ export default function InterviewSessionPage({ params }: { params: any }) {
   };
 
   const handleStopRecording = () => {
+    isExplicitlyStopped.current = true;
     if (recognition) {
       try {
         recognition.stop();
@@ -157,6 +171,7 @@ export default function InterviewSessionPage({ params }: { params: any }) {
   };
 
   const handleClear = () => {
+    isExplicitlyStopped.current = true;
     setTranscript("");
     setIsRecording(false);
     if (recognition) {
@@ -171,6 +186,15 @@ export default function InterviewSessionPage({ params }: { params: any }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!transcript.trim() || submitting) return;
+
+    isExplicitlyStopped.current = true;
+    if (recognition) {
+      try {
+        recognition.stop();
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
     setSubmitting(true);
     setErrorMsg("");
