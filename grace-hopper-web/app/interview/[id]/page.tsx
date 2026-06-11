@@ -5,6 +5,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/utils/supabase";
 
+function translateApiError(message: string): string {
+  const msg = message.toLowerCase();
+  if (msg.includes("não autorizado") || msg.includes("unauthorized") || msg.includes("não autenticado")) {
+    return "Sua sessão expirou por segurança. Por favor, faça login novamente para salvar e analisar sua resposta! 🔒";
+  }
+  if (msg.includes("limite") || msg.includes("quota") || msg.includes("rate limit") || msg.includes("excede")) {
+    return "Atingimos o limite temporário de análise de inteligência artificial. Por favor, aguarde um minutinho e tente enviar novamente! ⏳";
+  }
+  if (msg.includes("csrf")) {
+    return "Ops! A requisição foi recusada por segurança (CSRF). Por favor, recarregue a página e tente enviar de novo. 🛡️";
+  }
+  return message || "Tivemos um problema de conexão ao analisar sua resposta. Verifique sua internet ou tente novamente em instantes! 🌐";
+}
+
 export default function InterviewSessionPage({ params }: { params: any }) {
   const router = useRouter();
   const [id, setId] = useState<string | null>(null);
@@ -79,14 +93,17 @@ export default function InterviewSessionPage({ params }: { params: any }) {
 
         rec.onerror = (event: any) => {
           console.error("Erro no reconhecimento de fala:", event.error);
-          if (event.error === "not-allowed") {
-            setErrorMsg("Acesso ao microfone negado pelo navegador. Por favor, permita o acesso nas configurações de privacidade.");
-          } else if (event.error === "audio-capture") {
-            setErrorMsg("Falha ao capturar áudio. Verifique se o seu microfone está conectado e se não está em uso por outro aplicativo (como Discord, Teams ou outra aba).");
-          } else if (event.error === "no-speech") {
-            setErrorMsg("Nenhuma fala detectada. Fale mais próximo ao microfone ou ajuste o volume de entrada.");
+          const err = event.error;
+          if (err === "not-allowed") {
+            setErrorMsg("Ops! O acesso ao microfone foi negado. Por favor, permita o uso do microfone nas configurações do seu navegador para que possamos te ouvir! 🎙️");
+          } else if (err === "audio-capture") {
+            setErrorMsg("Não conseguimos capturar sua voz. Verifique se o microfone está bem conectado e se outro aplicativo (como Discord, Teams ou outra aba) não está usando ele agora. 🎧");
+          } else if (err === "no-speech") {
+            setErrorMsg("Não detectamos nenhuma fala. Fale um pouquinho mais perto do microfone ou ajuste o volume de entrada! 🎤");
+          } else if (err === "network") {
+            setErrorMsg("Tivemos um problema temporário de rede ao tentar transcrever sua fala. Verifique sua internet ou digite sua resposta na caixa de texto. 🌐");
           } else {
-            setErrorMsg(`Erro na gravação: ${event.error}. Você também pode digitar sua resposta diretamente na caixa abaixo.`);
+            setErrorMsg("Ocorreu um pequeno contratempo na gravação. Mas não se preocupe: você pode digitar sua resposta diretamente na caixa de texto abaixo! ✍️");
           }
           setIsRecording(false);
         };
@@ -124,7 +141,7 @@ export default function InterviewSessionPage({ params }: { params: any }) {
         console.error(e);
       }
     } else {
-      setErrorMsg("O reconhecimento de voz não é suportado pelo seu navegador atual. Você pode digitar sua resposta abaixo.");
+      setErrorMsg("O reconhecimento de voz não é suportado pelo seu navegador atual. Mas você pode digitar sua resposta na caixa abaixo sem problemas! ✍️");
     }
   };
 
@@ -176,7 +193,7 @@ export default function InterviewSessionPage({ params }: { params: any }) {
       router.push(`/feedback/${id}`);
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || "Erro de rede ao enviar resposta.");
+      setErrorMsg(translateApiError(err.message || ""));
       setSubmitting(false);
     }
   };

@@ -5,6 +5,29 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/utils/supabase";
 
+function translateAuthError(message: string): string {
+  const msg = message.toLowerCase();
+  if (msg.includes("invalid login credentials")) {
+    return "E-mail ou senha incorretos. Por favor, verifique os dados e tente de novo! 😊";
+  }
+  if (msg.includes("email not confirmed")) {
+    return "Seu e-mail ainda não foi verificado. Por favor, acesse sua caixa de entrada (e a pasta de spam) para confirmar sua conta! ✉️";
+  }
+  if (msg.includes("rate limit")) {
+    return "Muitas tentativas em pouco tempo! Por favor, aguarde alguns minutinhos antes de tentar novamente. ⏳";
+  }
+  if (msg.includes("already registered") || msg.includes("already exists")) {
+    return "Este e-mail já está cadastrado por aqui. Que tal fazer o login ou usar outro e-mail? 😉";
+  }
+  if (msg.includes("at least 6 characters") || msg.includes("should be at least 6")) {
+    return "A sua senha precisa ter pelo menos 6 caracteres para manter sua conta segura. 🔒";
+  }
+  if (msg.includes("invalid email")) {
+    return "Por favor, digite um e-mail em formato válido (exemplo@dominio.com). 📧";
+  }
+  return message || "Ops! Ocorreu um contratempo ao autenticar. Tente novamente em instantes.";
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -36,7 +59,7 @@ export default function LoginPage() {
         router.push("/dashboard");
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "Erro desconhecido ao autenticar.");
+      setErrorMsg(translateAuthError(err.message || ""));
     } finally {
       setLoading(false);
     }
@@ -53,7 +76,7 @@ export default function LoginPage() {
       });
       if (error) throw error;
     } catch (err: any) {
-      setErrorMsg(err.message || "Erro ao iniciar o Google OAuth.");
+      setErrorMsg(translateAuthError(err.message || ""));
     }
   };
 
