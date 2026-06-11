@@ -4,7 +4,7 @@
 Product where AI is core to the experience.
 
 ## Speech-to-text
-Voice converted into text.
+Voice converted into text. **MVP:** Web Speech API in the browser (free). Cloud STT (e.g. Google Cloud) only in V2+ if needed.
 
 ## Conversational UX
 Interfaces designed around natural dialogue.

@@ -3,6 +3,8 @@
 ## Overview
 Este documento registra as principais decisões arquiteturais do projeto Grace Hopper, as alternativas consideradas e as justificativas técnicas.
 
+**MVP (Jun/2026):** stack full-stack em **Next.js** na Vercel — API Routes no mesmo projeto, **sem FastAPI** e **sem Google Cloud STT**. Alinhado a `Cursor_docs/GRACE_HOPPER_CURSOR_MVP_GUIDE.md`. Custo alvo: **R$ 0** (free tiers).
+
 ---
 
 ## ADR-001: Framework Frontend
@@ -45,43 +47,42 @@ NextJS 14
 
 ---
 
-## ADR-002: Backend Framework
+## ADR-002: Backend / API (MVP)
 
 ### Contexto
-Necessidade de framework Python escalável, rápido e com suporte nativo a IA/LLMs.
+Necessidade de endpoints para análise de entrevistas (Gemini), com deploy simples, custo zero e mesmo repositório do frontend.
 
 ### Decisão
-**Usar FastAPI ao invés de Django/Flask**
+**Usar Next.js API Routes (App Router) na Vercel — sem serviço Python separado no MVP**
 
 ### Alternativas Consideradas
-1. **Django + DRF**
-   - Pros: Muito completo, ORM excelente, comunidade enorme
-   - Cons: Overhead pesado, opinionado, mais lento
+1. **FastAPI no Render**
+   - Pros: Performance, async nativo, bom para IA em escala
+   - Cons: Segundo deploy, custo potencial, complexidade extra para case de portfólio
 
-2. **Flask**
-   - Pros: Minimalista, flexible
-   - Cons: Muito manual para escala, comunidade menor
+2. **Django + DRF / Flask**
+   - Pros: Ecossistema Python maduro
+   - Cons: Overhead e ops desnecessários para MVP
 
-3. **FastAPI** ✅
-   - Pros: Performance, async/await nativo, OpenAPI automático
-   - Cons: Ecossistema menor que Django
+3. **Next.js API Routes** ✅
+   - Pros: Um único projeto, TypeScript end-to-end, deploy único na Vercel, free tier
+   - Cons: Menos ideal se o backend crescer muito (aceitável para MVP)
 
 ### Justificativa
-- **Performance**: Async-first, rodas bem em serverless (Render)
-- **IA-Ready**: Integração direta com APIs de LLM, bom para AI workloads
-- **Developer Experience**: Auto-documentation, type hints, validação automática
-- **Escalabilidade**: Suporta WebSockets, streaming responses
-- **Deployment**: Fácil no Render, suporta auto-scaling
+- **Simplicidade**: Frontend + API no mesmo codebase (`app/api/`)
+- **Custo**: R$ 0 — Vercel hobby + Supabase + Gemini free tier
+- **DX**: Mesma linguagem (TypeScript), menos contexto para o time de um
+- **IA**: Chamadas server-side à Gemini API a partir das Route Handlers
+- **Escopo MVP**: Análise de transcrição e persistência no Supabase — suficiente sem microserviço
 
 ### Implementação
 ```
-FastAPI
-├── Pydantic para validação
-├── SQLAlchemy para ORM
-├── Async endpoints
-├── Background tasks
-├── Logging estruturado
-└── Rate limiting
+Next.js App Router
+├── app/api/analyze/route.ts    # POST transcrição → Gemini → JSON feedback
+├── app/api/questions/route.ts  # (opcional) gerar pergunta
+├── Validação com Zod (ou similar)
+├── Chaves Gemini/Supabase em env (Vercel + .env.local)
+└── Sem FastAPI no MVP
 ```
 
 ---
@@ -156,109 +157,97 @@ Necessidade de LLM para análise conversacional, feedback estruturado e prompt e
 - **Structured Output**: Suporta JSON schema para feedback estruturado
 
 ### Implementação
-```python
-# Prompt template com exemplos in-context
-# Guardrails via prompt engineering
-# Caching de prompts para economia
-# Rate limiting: 60 req/min
-# Fallback: cache de feedback anterior
+```typescript
+// Route Handler server-side (app/api/analyze/route.ts)
+// Prompt template + structured JSON output (score, strengths, improvements)
+// Google AI Studio — chave gratuita no MVP
+// Rate limiting básico na API Route se necessário
+// Fallback: mensagem amigável se Gemini indisponível
 ```
 
 ---
 
-## ADR-005: Speech-to-Text
+## ADR-005: Speech-to-Text (MVP)
 
 ### Contexto
-Necessidade de transcrever áudio do usuário em tempo real, com alta precisão.
+Necessidade de transcrever a resposta do usuário por voz durante a entrevista, sem custo e sem cartão de crédito no MVP.
 
 ### Decisão
-**Usar Web Audio API (frontend) + Google Cloud Speech-to-Text (backend)**
+**Usar Web Speech API no browser (captura + transcrição no cliente) — sem Google Cloud STT no MVP**
 
 ### Alternativas Consideradas
-1. **Apenas Web Audio API (local)**
-   - Pros: Privacidade, sem latência de rede
-   - Cons: Precisão ruim, sem punctuation
+1. **Google Cloud Speech-to-Text**
+   - Pros: Alta precisão, punctuation, multilíngue
+   - Cons: Exige billing Google Cloud; fora do orçamento R$ 0 do MVP
 
-2. **Whisper (OpenAI local)**
-   - Pros: Excelente precisão, open source
-   - Cons: Computacionalmente pesado, lento
+2. **Whisper (self-hosted / API paga)**
+   - Pros: Boa precisão
+   - Cons: Custo ou infra extra
 
-3. **Google Cloud Speech-to-Text** ✅
-   - Pros: Excelente precisão, real-time, handles accents
-   - Cons: Custa money, dependência de API
+3. **Web Speech API** ✅
+   - Pros: Grátis, zero backend de áudio, privacidade (áudio não sobe para STT cloud)
+   - Cons: Precisão variável por browser; suporte melhor em Chrome
 
 ### Justificativa
-- **Precisão**: 95%+ accuracy em português/inglês
-- **Real-time**: Streaming support, transcrição enquanto grava
-- **Handling**: Punctuation, capitalization automáticas
-- **Cost**: $0.006 per 15 seconds (~$0.024 por entrevista de 1min)
-- **Multilingual**: Português e Inglês
+- **Custo**: R$ 0 — alinhado ao guia Cursor MVP
+- **Fluxo**: Usuário fala → browser transcreve → texto enviado à API Route → Gemini analisa
+- **MVP**: Aceitável para case de portfólio; precisão enterprise pode vir em V2+
+- **Simplicidade**: Sem pipeline de chunks de áudio no servidor
 
 ### Implementação
 ```javascript
-// Frontend: Web Audio API para captura
-// Enviar chunks de 1s para backend
-// Backend: Google Cloud STT
-// Cache resultados para retry
+// Frontend: Web Speech API (SpeechRecognition) para captura e transcrição
+// Exibir transcrição ao usuário antes de enviar
+// POST apenas o texto transcrito para app/api/analyze
+// Fallback UX: permitir editar texto se transcrição falhar
+// Google Cloud STT: considerar apenas em V2+ se precisão for bloqueante
 ```
 
 ---
 
-## ADR-006: Deploy & Hosting
+## ADR-006: Deploy & Hosting (MVP)
 
 ### Contexto
-Necessidade de deploy rápido, confiável e escalável com boa DX.
+Necessidade de deploy rápido, confiável e com custo zero para o case de portfólio.
 
 ### Decisão
-**Frontend: Vercel | Backend: Render.com**
+**Deploy único na Vercel (Next.js frontend + API Routes) + Supabase managed**
 
 ### Alternativas Consideradas
-1. **Monolithic (tudo um lugar)**
-   - Pros: Operacionalmente simples
-   - Cons: Escalada acoplada, difícil separar recursos
+1. **Vercel + Render (FastAPI separado)**
+   - Pros: Separação clara front/back
+   - Cons: Dois serviços, custo potencial no Render — descartado no MVP
 
 2. **AWS EC2 + RDS**
    - Pros: Máximo controle
-   - Cons: Ops complexo, auto-scaling manual
+   - Cons: Ops complexo, fora do escopo MVP
 
-3. **Vercel + Render** ✅
-   - Pros: Serverless, auto-scaling, DX excelente, CI/CD free
-   - Cons: Menos customização que AWS
+3. **Vercel (monólito Next.js)** ✅
+   - Pros: Um deploy, preview por PR, hobby free, API Routes incluídas
+   - Cons: Limites do serverless se escala muito (ok para MVP)
 
 ### Justificativa
-- **Frontend (Vercel)**
-  - Edge functions para middleware
-  - Automatic image optimization
-  - Preview deployments automáticas
-  - Analytics integrado
-  - $0 a $20/mês para MVP
-
-- **Backend (Render)**
-  - Auto-scaling horizontal
-  - Ambiente managed (não precisa DevOps)
-  - PostgreSQL managed
-  - $7/mês por dyno + database
-  - Webhooks e CRON jobs integrados
+- **Um repositório, um deploy**: `grace-hopper-web` → Vercel
+- **API Routes** rodam como serverless functions na mesma plataforma
+- **Supabase**: banco + auth fora da Vercel (free tier)
+- **Custo MVP**: R$ 0 (Vercel hobby + Supabase + Gemini free)
 
 ### Arquitetura
 ```
 ┌─────────────────────────────────────┐
 │ Client (Browser)                    │
+│  Web Speech API → transcrição local │
 └────────┬────────────────────────────┘
          │
-    ┌────▼─────┐
-    │ Vercel   │ (Edge)
-    └────┬─────┘
-         │
-    ┌────▼──────────┐
-    │ FastAPI on    │
-    │ Render        │ (Auto-scaling)
-    └────┬──────────┘
-         │
-    ┌────▼──────────────┐
-    │ Supabase          │
-    │ PostgreSQL + Auth │
-    └───────────────────┘
+    ┌────▼────────────────────────────┐
+    │ Vercel                          │
+    │  Next.js (pages + API Routes)   │
+    └────┬──────────────────┬─────────┘
+         │                  │
+    ┌────▼─────┐      ┌─────▼───────────┐
+    │ Gemini   │      │ Supabase        │
+    │ API      │      │ PostgreSQL+Auth │
+    └──────────┘      └─────────────────┘
 ```
 
 ---
@@ -369,12 +358,12 @@ Necessidade de armazenar áudio das entrevistas para processamento e possível r
 - **Cost**: Competitivo com S3
 - **Simplicity**: Não precisa AWS console
 
-### Implementação
+### Implementação (MVP simplificado)
 ```
-Audio files → Supabase Storage
-Metadata → interviews table
-Processing → Background task (Render)
-Cleanup → 30 dias após entrevista
+MVP: priorizar texto transcrito (Web Speech API) — sem upload de áudio obrigatório
+Opcional V2: áudio → Supabase Storage + metadata em interviews
+Processamento IA: síncrono na API Route (sem worker Render)
+Cleanup: política de retenção a definir em V2
 ```
 
 ---
@@ -385,7 +374,7 @@ Cleanup → 30 dias após entrevista
 Necessidade de entender uso, comportamento de usuários e detectar problemas.
 
 ### Decisão
-**Vercel Analytics (frontend) + Custom events (backend) + Supabase logs**
+**Vercel Analytics (frontend) + eventos custom no Supabase (MVP mínimo)**
 
 ### Alternativas Consideradas
 1. **Google Analytics 4**
@@ -396,16 +385,15 @@ Necessidade de entender uso, comportamento de usuários e detectar problemas.
    - Pros: Excelente para product analytics
    - Cons: Caro ($500+), setup complexo
 
-3. **Custom (Vercel + Supabase + simple dashboard)**
+3. **Custom (Vercel + Supabase)** ✅
    - Pros: Controle total, barato, privacy-first
    - Cons: Menos polished que Enterprise tools
 
 ### Justificativa
 - **Frontend**: Vercel Analytics para Web Vitals
-- **Backend**: Eventos custom em Supabase (analytics_events table)
-- **Dashboards**: Metabase ou Looker Studio (free)
-- **Logs**: Render + CloudWatch para debugging
-- **Cost**: < $100/mês total
+- **Produto**: Eventos em tabela Supabase (`analytics_events`) se necessário
+- **Logs API**: Vercel function logs + console estruturado nas Route Handlers
+- **Cost**: R$ 0 no MVP
 
 ### Eventos Principais
 ```
@@ -441,13 +429,12 @@ Necessidade de qualidade de código, confiabilidade e regressão prevention.
    - Cons: Equilibrio complicado
 
 ### Justificativa
-- **Unit tests (Jest/Pytest)**
-  - Funções puras, utils, componentes simples
-  - Target: 80% coverage para core
+- **Unit tests (Jest / Vitest)**
+  - Funções puras, utils, componentes React
+  - Target: cobertura razoável no core (sem obsessão no MVP)
 
 - **Integration tests**
-  - API endpoints com mock/stub
-  - Database queries
+  - API Routes com mock de Gemini e Supabase
   - Auth flows
 
 - **E2E tests (Playwright)**
@@ -470,7 +457,7 @@ Necessidade de deploy automático, confiável e com rollback fácil.
 1. PR aberta
    ↓ GitHub Actions
    - Lint (ESLint + Prettier)
-   - Tests (Jest + Pytest)
+   - Tests (Jest / Vitest)
    - Build check
 
 2. Preview Deploy (Vercel)
@@ -495,24 +482,23 @@ Necessidade de deploy automático, confiável e com rollback fácil.
 Necessidade de entender o que quebrou em produção e poder debugar.
 
 ### Decisão
-**Structured logging + Sentry para frontend + CloudWatch para backend**
+**Structured logging + Sentry (opcional no MVP) + Vercel function logs**
 
 ### Implementação
 ```
 Frontend:
-- Sentry for exceptions
-- Console logs estruturados (JSON)
+- Sentry for exceptions (opcional MVP)
+- Console logs estruturados em dev
 - Network errors captured
 
-Backend:
-- Python logging module
-- CloudWatch/Render logs
-- Request/response logging
-- Slow query alerting
+API Routes (Next.js):
+- console/json log nas Route Handlers
+- Vercel dashboard para erros de serverless
+- Validar entrada antes de chamar Gemini
 
 Database:
 - Supabase logs
-- Query performance monitoring
+- Query performance monitoring (quando necessário)
 ```
 
 ---
@@ -521,19 +507,19 @@ Database:
 
 ### Quando considerar mudanças:
 
-1. **Se performance degradar**
-   - Migrar para Postgres cache (Redis)
-   - Edge computing for image processing
+1. **Se precisão de voz for bloqueante**
+   - Google Cloud Speech-to-Text ou Whisper API
+   - Upload de áudio + pipeline assíncrono
 
-2. **Se escala aumentar 100x**
-   - Considerar tirar content estático para CDN edge
-   - Database sharding
-   - Queue system (Bull/Celery)
+2. **Se backend Python fizer sentido**
+   - FastAPI no Render/Railway para workloads pesados de IA
+   - Separar front (Vercel) e API Python
 
-3. **Se precisar de compliance enterprise**
-   - HIPAA/SOC2 compliance
-   - Self-hosted option
-   - Migrar para AWS/GCP
+3. **Se performance degradar**
+   - Redis cache, filas (Bull/Inngest), edge onde couber
+
+4. **Se escala ou compliance enterprise**
+   - HIPAA/SOC2, self-hosted, AWS/GCP
 
 ---
 
@@ -541,11 +527,11 @@ Database:
 
 | Decisão | Benefício | Custo |
 |---------|-----------|-------|
-| Next.js | Performance + DX | Overhead vs SPA puro |
-| FastAPI | Performance | Comunidade menor |
+| Next.js (front + API Routes) | Um deploy, TypeScript end-to-end | Overhead vs SPA puro |
+| Web Speech API | R$ 0, sem backend de áudio | Precisão variável por browser |
 | Supabase | Integrado + Simple | Lock-in |
-| Gemini | Latência baixa | Menos opções de customização |
-| Vercel+Render | DX + Serverless | Menos controle que self-hosted |
+| Gemini (AI Studio free) | Latência baixa, custo zero MVP | Limites do free tier |
+| Vercel único | DX + preview deploys | Limites serverless |
 | Real-time via Supabase | Simples | Não pode fazer complex sync |
 
 ---
@@ -558,6 +544,7 @@ Database:
 
 ---
 
-**Versão:** 1.0  
-**Atualizado:** Maio 2026  
-**Owner:** Tech Lead
+**Versão:** 2.0 (MVP — sem FastAPI)  
+**Atualizado:** Junho 2026  
+**Owner:** Tech Lead  
+**Referência:** `Cursor_docs/GRACE_HOPPER_CURSOR_MVP_GUIDE.md`

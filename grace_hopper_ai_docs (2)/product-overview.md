@@ -12,7 +12,7 @@ Voice-based interview simulation with instant AI feedback.
 ## Core Features
 - Voice interviews
 - AI feedback
-- Speech-to-text
+- Speech-to-text (Web Speech API in browser)
 - Progress tracking
 - Custom interview questions
 

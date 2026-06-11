@@ -39,7 +39,7 @@ A **free AI coach** available 24/7, helping you practice unlimited interviews wi
 ### MVP (Now Available)
 - 🔐 **Google OAuth Authentication** - One-click login
 - 🎤 **Voice Recording** - Practice with natural conversation
-- 📝 **Real-time Speech-to-Text** - Accurate transcription
+- 📝 **Speech-to-Text (Web Speech API)** - Browser transcription, no cloud STT cost
 - 🧠 **AI-Powered Feedback** - Instant analysis of your response
 - 📊 **Smart Dashboard** - Track your progress
 - 📜 **Interview History** - Review all past attempts
@@ -126,23 +126,23 @@ Suggested Answer:
 - **Tailwind CSS** - Utility-first styling
 - **shadcn/ui** - High-quality UI components
 
-### Backend
-- **FastAPI** - High-performance Python framework
-- **Google Gemini API** - Advanced LLM for analysis
-- **Web Audio API** - Real-time audio capture
-- **Google Cloud Speech-to-Text** - 95%+ accuracy transcription
+### Backend (MVP)
+- **Next.js API Routes** - Serverless API on Vercel (no separate Python service)
+- **Google Gemini API** - Advanced LLM for analysis (Google AI Studio free tier)
+- **Web Speech API** - Voice capture and transcription in the browser
 
 ### Infrastructure
-- **Supabase** - PostgreSQL + Real-time + Auth
-- **Vercel** - Frontend deployment
-- **Render** - Backend deployment
+- **Supabase** - PostgreSQL + Real-time + Auth (Google OAuth)
+- **Vercel** - Single deploy (frontend + API Routes)
 - **GitHub Actions** - CI/CD pipeline
+
+> MVP stack: see `../Cursor_docs/GRACE_HOPPER_CURSOR_MVP_GUIDE.md` and `GRACE_HOPPER_ADR.md` (v2.0).
 
 ### Performance Targets
 | Metric | Target |
 |--------|--------|
 | AI Feedback Response | < 3 seconds |
-| Speech-to-Text | < 500ms |
+| Speech-to-Text (browser) | < 500ms perceived |
 | Page Load | < 2 seconds |
 | Uptime | 99.9% |
 
@@ -284,9 +284,9 @@ With the condition that you include the license and copyright notice.
 
 ### Technology Stack
 - [Next.js Documentation](https://nextjs.org/docs)
-- [FastAPI Guide](https://fastapi.tiangolo.com/)
 - [Supabase Docs](https://supabase.com/docs)
 - [Google Gemini API](https://ai.google.dev/)
+- [Web Speech API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)
 
 ---
 

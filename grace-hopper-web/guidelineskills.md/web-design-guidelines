@@ -1,0 +1,20 @@
+# Skill: web-design-guidelines
+
+Nesta skill, realizamos auditorias e melhorias estéticas e de acessibilidade no frontend:
+
+1. **Indicadores de Foco Acessíveis (`focus-visible`):**
+   - Adicionada a classe `focus-visible:ring-2 focus-visible:ring-[#0A0A41]` em botões e links de navegação nos seguintes arquivos:
+     - `app/feedback/[id]/page.tsx`
+     - `components/ui/animated-hero.tsx`
+     - `app/page.tsx`
+     - `app/dashboard/page.tsx`
+     - `app/interview/[id]/page.tsx`
+
+2. **Tipografia Correta (Elipse Tipográfica):**
+   - Substituição de `"..."` por `"…"` nas strings de carregamento e placeholders (ex: "Carregando…", "Analisando com IA…").
+
+3. **Substituição de Transições Genéricas:**
+   - Alteração de `transition-all` para listagem explícita de propriedades (ex: `transition-colors`) nos botões para otimizar renderização e evitar saltos visuais.
+
+4. **Correção de Performance & CLS (Cumulative Layout Shift):**
+   - Substituição de tag HTML `<img>` por componente `<Image>` do Next.js com as propriedades `fill` e `priority` no cabeçalho da página principal (`app/page.tsx`).
