@@ -12,13 +12,30 @@ export default function DashboardPage() {
   const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
+    let mounted = true;
+
     const loadDashboardData = async () => {
       // 1. Verificar autenticação
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
+      if (!mounted) return;
+
       if (!user) {
+        // Se a URL contiver hashes de token ou parâmetros de OAuth, o Supabase ainda está processando o login.
+        // Esperamos um pouco em vez de redirecionar para o login imediatamente.
+        const hasOAuthParams = typeof window !== "undefined" && (
+          window.location.hash.includes("access_token") || 
+          window.location.hash.includes("id_token") ||
+          window.location.search.includes("code=")
+        );
+
+        if (hasOAuthParams) {
+          setTimeout(loadDashboardData, 500);
+          return;
+        }
+
         router.push("/login");
         return;
       }
@@ -61,7 +78,7 @@ export default function DashboardPage() {
         if (queryResult.error) throw queryResult.error;
 
         const data = queryResult.data;
-        if (data) {
+        if (data && mounted) {
           const formatted = data.map((item: any) => {
             const feedbackArray = item.feedback as any[];
             const score = feedbackArray && feedbackArray.length > 0 ? feedbackArray[0].score : null;
@@ -87,11 +104,25 @@ export default function DashboardPage() {
       } catch (e) {
         console.error("Erro ao carregar dados do dashboard:", e);
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     loadDashboardData();
+
+    // Ouvir mudanças de autenticação (ex: login bem sucedido)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user && mounted) {
+        loadDashboardData();
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [router]);
 
   const handleLogout = async () => {
