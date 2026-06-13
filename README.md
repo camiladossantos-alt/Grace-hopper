@@ -200,12 +200,24 @@ Suggested Answer:
 
 ---
 
-## 📚 Documentation
+## 📚 PM & AI Product Portfolio Documentation
 
-Complete documentation available in the [Grace Hopper Docs Portal](https://your-username.github.io/grace-hopper-docs/grace_hopper_prd_portal.html):
+This repository serves as a showcase of my skills as an **AI Product Manager**, demonstrating end-to-end execution, structural thinking, agile backlog management, security/compliance considerations, and design choices. 
 
-- **[Product Overview](grace_hopper_prd_portal.html)** - Complete product documentation
-- **[Architecture Decisions](GRACE_HOPPER_ADR.md)** - Technical decisions & trade-offs
+You can explore the complete product management blueprints prepared for **Confluence, Jira, and Miro** below:
+
+### 💼 Confluence Blueprints (Product Specification & Narrative)
+*   📄 **[Product Requirements Document (PRD)](docs/portfolio/confluence-prd.md)** - Executive specs mapping user personas, product flows, RICE prioritization matrix, success metrics (KPIs), and security policies.
+*   📊 **[AI Product Case Study](docs/portfolio/confluence-case-study.md)** - Explores core PM trade-offs (e.g., Web Speech API vs. cloud cost, latency reduction using Gemini Flash Lite, and GDPR/LGPD data privacy strategy).
+
+### 🎫 Jira Backlog & Agile Framework
+*   🎫 **[Jira Backlog Blueprint & Stories](docs/portfolio/jira-backlog.md)** - Agile user story mapping (formatted in Gherkin) with story points (Fibonacci) and prioritization.
+*   📥 **[Jira Importable CSV Backlog](docs/portfolio/jira-backlog-import.csv)** - A 1-click importable file to automatically generate the entire project backlog (Epics, Stories, Priorities, Points) directly on your Jira board.
+
+### 🎨 Miro Visual Mapping
+*   🎨 **[Miro Boards Blueprint](docs/portfolio/miro-boards-blueprint.md)** - Complete content maps and layouts for the 4 public Miro boards: *Product Vision (Lean Canvas), User Journey Map (Voice-first UX), MVP Scope Matrix (Effort x Value), and Architecture/Data Flow*.
+
+---
 
 ---
 

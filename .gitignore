@@ -1,0 +1,12 @@
+# Ignorar pasta de arquivos locais e privados
+/local-archive/
+
+# Ignorar arquivos de log da IDE e temporários
+LAST_SESSION.md
+.env
+.env.local
+
+# Garantir exclusões padrão do Next.js
+grace-hopper-web/.next/
+grace-hopper-web/node_modules/
+grace-hopper-web/.env.local

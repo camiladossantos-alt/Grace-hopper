@@ -87,7 +87,7 @@ Project Grace Hooper/
 - [x] Fluxo entrevista: gerar pergunta, Web Speech API, API Route analyze com Gemini
 - [x] Telas feedback e dashboard com histórico real do Supabase
 - [x] Otimizar performance (CLS, LCP) e corrigir segurança/CSRF e acessibilidade (Focus Rings)
-- [ ] Deploy Vercel em produção, README final de portfólio, Miro + LinkedIn demo
+- [x] Deploy Vercel em produção, README final de portfólio, Miro + LinkedIn demo
 
 **Páginas do MVP (ordem sugerida):**
 

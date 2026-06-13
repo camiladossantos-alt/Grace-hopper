@@ -1,0 +1,42 @@
+Issue Type,Summary,Description,Priority,Story Points,Epic Name
+Epic,Autenticação & Segurança (Auth & Security),Epic para agregar tarefas de login seguro e integridade de APIs no Supabase.,High,,Autenticação & Segurança (Auth & Security)
+Epic,Core UX — Fluxo de Entrevista (Interview Flow),Epic dedicado ao fluxo principal do usuário praticando perguntas por voz com Web Speech API.,High,,Core UX — Fluxo de Entrevista (Interview Flow)
+Epic,Inteligência Artificial (AI Integration),Epic focado nas conexões e feedbacks estruturados gerados com a API do Gemini.,High,,Inteligência Artificial (AI Integration)
+Epic,Histórico & Progresso (Dashboard),Epic para visualização de notas e histórico do candidato com políticas RLS.,Medium,,Histórico & Progresso (Dashboard)
+Story,US-01: Cadastro e Login Simplificado com Google OAuth,"Como candidato buscando praticidade, quero logar na plataforma usando minha conta Google com um clique, para acessar o simulador e ter meu histórico salvo imediatamente.
+
+Critérios de Aceite:
+1. Botão 'Continuar com Google' na rota /login dispara autenticação Supabase.
+2. Sucesso redireciona para /dashboard.
+3. Rota /dashboard protegida contra usuários deslogados.",High,3,Autenticação & Segurança (Auth & Security)
+Story,US-02: Proteção de API contra Abuso (CSRF & Payload Limits),"Como administrador do sistema, quero validar a origem das requisições e limitar o tamanho dos textos enviados para a API, para evitar ataques de CSRF e consumo indevido da cota da API do Gemini.
+
+Critérios de Aceite:
+1. Validar se Origin corresponde ao Host nas chamadas POST da API.
+2. Bloquear payloads de transcrição maiores que 10.000 caracteres.",High,3,Autenticação & Segurança (Auth & Security)
+Story,US-03: Transcrição de Resposta por Voz em Tempo Real (Speech-to-Text),"Como candidato respondendo à simulação, quero falar no microfone do meu navegador e ver a transcrição em texto aparecer em tempo real, para que eu possa revisar o que falei antes de submeter a resposta para a IA.
+
+Critérios de Aceite:
+1. Captura de voz em pt-BR via Web Speech API.
+2. Permite edição de texto manual após a gravação.
+3. Fallback amigável (textarea) se permissão do microfone for negada.",High,8,Core UX — Fluxo de Entrevista (Interview Flow)
+Story,US-04: Acessibilidade WCAG e Focus Ring nos Controles,"Como usuário que navega exclusivamente via teclado ou leitor de tela, quero ter indicadores de foco visuais nítidos em todos os botões de ação e gravação, para conseguir praticar de forma inclusiva.
+
+Critérios de Aceite:
+1. Foco visível com focus-visible:ring-2 em botões e inputs.
+2. Transições e tempos de carregamento legíveis por leitores de tela.",Medium,2,Core UX — Fluxo de Entrevista (Interview Flow)
+Story,US-05: Geração de Perguntas Dinâmicas por Cargo e Tipo (Gemini),"Como candidato buscando treinar cenários reais de contratação, quero que a plataforma gere perguntas sob medida do tipo Técnico, Comportamental ou Situacional, para simular a imprevisibilidade de uma sabatina.
+
+Critérios de Aceite:
+1. Rota /api/interview/start gera pergunta curta via Gemini API.
+2. Mock fallback local em caso de erro/timeout.",High,5,Inteligência Artificial (AI Integration)
+Story,US-06: Feedback de IA Estruturado e Sugestão de Frases Profissionais,"Como candidato ansioso pelo resultado da minha simulação, quero que a IA retorne uma nota geral com pontos fortes e fracos estruturados e sugestões de frases profissionais sêniores, para saber onde errei e corrigir meu vocabulário.
+
+Critérios de Aceite:
+1. Rota /api/interview/analyze retorna JSON formatado do Gemini.
+2. Frontend destaca sugestões de frases profissionais com caixa estilizada e ícone.",High,5,Inteligência Artificial (AI Integration)
+Story,US-07: Dashboard com Histórico e Segurança RLS,"Como usuário recorrente da plataforma, quero ver meu histórico de simulações com as respectivas notas em um dashboard centralizado, para ver a evolução do meu score ao longo do tempo.
+
+Critérios de Aceite:
+1. Listar últimas simulações do usuário autenticado no dashboard.
+2. Políticas de RLS no Supabase PostgreSQL impedem acesso a dados de outros usuários.",Medium,3,Histórico & Progresso (Dashboard)
