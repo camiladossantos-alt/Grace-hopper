@@ -65,7 +65,7 @@ A **free AI coach** available 24/7, helping you practice unlimited interviews wi
 #### Option 1: Online (Recommended)
 Visit our live portal:
 ```
-https://your-username.github.io/grace-hopper-docs/grace_hopper_prd_portal.html
+https://your-username.github.io/grace-hopper/grace_hopper_prd_portal.html
 ```
 
 #### Option 2: Local
