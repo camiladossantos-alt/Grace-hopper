@@ -211,6 +211,49 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Recruiter / PM Portfolio Hub Card */}
+        <div className="bg-white border border-[#E5E7EB] p-6 rounded-[8px] shadow-none flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-block px-2.5 py-0.5 rounded-[4px] text-[10px] font-bold uppercase bg-[#0A0A41]/10 text-[#0A0A41] tracking-wider">
+                Modo Recrutador
+              </span>
+              <span className="text-xs text-[#666666] font-medium">Artefatos de Produto & Planejamento</span>
+            </div>
+            <h2 className="text-base font-bold text-[#0A0A41] uppercase mb-1">Central de Engenharia & Produto</h2>
+            <p className="text-xs text-[#666666] leading-relaxed">
+              Acesse a documentação completa do MVP: especificações do Confluence, backlog priorizado no Jira e mapeamento visual no Miro.
+            </p>
+          </div>
+          
+          <div className="flex flex-wrap gap-3 w-full md:w-auto justify-start md:justify-end">
+            <a
+              href="/grace_hopper_prd_portal.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 text-xs font-semibold px-4 py-2.5 border border-[#E5E7EB] rounded-[6px] bg-[#F9FAFB] text-[#0A0A41] hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A41] focus-visible:ring-offset-2 transition-all cursor-pointer whitespace-nowrap"
+            >
+              📘 Confluence PRD & Case
+            </a>
+            <a
+              href="https://github.com/camiladossantos-alt/Grace-hopper"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 text-xs font-semibold px-4 py-2.5 border border-[#E5E7EB] rounded-[6px] bg-[#F9FAFB] text-[#0A0A41] hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A41] focus-visible:ring-offset-2 transition-all cursor-pointer whitespace-nowrap"
+            >
+              🎫 Jira Backlog (Gherkin)
+            </a>
+            <a
+              href="https://github.com/camiladossantos-alt/Grace-hopper/blob/main/docs/portfolio/miro-boards-blueprint.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 text-xs font-semibold px-4 py-2.5 border border-[#E5E7EB] rounded-[6px] bg-[#F9FAFB] text-[#0A0A41] hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A41] focus-visible:ring-offset-2 transition-all cursor-pointer whitespace-nowrap"
+            >
+              🎨 Miro Journey & Canvas
+            </a>
+          </div>
+        </div>
+
         {/* History List Section */}
         <div className="bg-white border border-[#E5E7EB] rounded-[8px] p-6 shadow-none">
           <h2 className="text-lg font-bold mb-6 text-[#0A0A41] uppercase">Histórico de Práticas</h2>
