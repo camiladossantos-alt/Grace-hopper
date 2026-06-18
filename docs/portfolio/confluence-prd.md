@@ -6,7 +6,7 @@
 | **Status** | `COMPLETED` (Ready for Deploy) |
 | **Target Release** | Q2 2026 (MVP) |
 | **Stack Principal** | Next.js 14, Supabase Auth/DB, Gemini API, Web Speech API |
-| **Objetivo do Case** | Demonstrar competências de PM de IA em priorização, controle de custos (Custo Zero), UX por voz e compliance (LGPD/Segurança). |
+| **Objetivo do Case** | Demonstrar competências de PM de IA em priorização, controle de custos (Custo Zero), UX por voz e compliance (LGPD/Segurança). End to end product cicle|
 
 ---
 
