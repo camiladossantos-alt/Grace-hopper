@@ -65,7 +65,7 @@ A **free AI coach** available 24/7, helping you practice unlimited interviews wi
 #### Option 1: Online (Recommended)
 Visit our live portal:
 ```
-https://your-username.github.io/grace-hopper/grace_hopper_prd_portal.html
+https://camiladossantos-alt.github.io/Grace-hopper/grace_hopper_prd_portal.html
 ```
 
 #### Option 2: Local
@@ -226,21 +226,21 @@ You can explore the complete product management blueprints prepared for **Conflu
 
 ### For Developers
 - **Documentation:** See [CONTRIBUTING.md](CONTRIBUTING.md)
-- **Issues:** Help with [good first issues](https://github.com/your-org/grace-hopper/issues?q=label:"good+first+issue")
+- **Issues:** Help with [good first issues](https://github.com/camiladossantos-alt/Grace-hopper/issues?q=label:"good+first+issue")
 
 ### For Businesses
 - **Partnerships:** camila.dos.santos.contact@gmail.com
-- **Website:** camiladoss/linkedin
+- **Website:** https://linkedin.com/in/camiladossantos-alt
 
 ---
 
 ## 👥 Team & Contributors
 
 ### Core Team
-- **Project Lead** - [Camila dos Santos](https://github.com/yourname)
-- **Tech Lead** - [Camila dos Santos](https://github.com)
-- **Product Manager** - [Camila dos Santos](https://github.com)
-- **Lead Designer** - [Camila dos Santos](https://github.com)
+- **Project Lead** - [Camila dos Santos](https://github.com/camiladossantos-alt)
+- **Tech Lead** - [Camila dos Santos](https://github.com/camiladossantos-alt)
+- **Product Manager** - [Camila dos Santos](https://github.com/camiladossantos-alt)
+- **Lead Designer** - [Camila dos Santos](https://github.com/camiladossantos-alt)
 
 ### Contributors
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
